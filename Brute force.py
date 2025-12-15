@@ -1,12 +1,11 @@
 import itertools
 
-def brute_force_planner(tasks, total_time):
+def brute_force_all_solutions(tasks, total_time):
     """
-    tasks: list of dictionaries
-    total_time: available hours
+    Returns all task orders that achieve the maximum productivity
     """
-    best_schedule = None
     max_productivity = 0
+    best_schedules = []
 
     for perm in itertools.permutations(tasks):
         current_time = 0
@@ -21,9 +20,11 @@ def brute_force_planner(tasks, total_time):
 
         if productivity > max_productivity:
             max_productivity = productivity
-            best_schedule = schedule
+            best_schedules = [schedule]  # start a new list
+        elif productivity == max_productivity:
+            best_schedules.append(schedule)  # add to existing list
 
-    return best_schedule, max_productivity
+    return best_schedules, max_productivity
 
 
 def get_user_input():
@@ -41,9 +42,13 @@ def get_user_input():
 
 if __name__ == "__main__":
     tasks, total_time = get_user_input()
-    best_schedule, max_productivity = brute_force_planner(tasks, total_time)
+    best_schedules, max_productivity = brute_force_all_solutions(tasks, total_time)
     
-    print("\nBest task schedule:")
-    for task in best_schedule:
-        print(f"- {task}")
-    print(f"Total productivity achieved: {max_productivity}")
+    print(f"\nMaximum productivity achievable: {max_productivity}")
+    print(f"Number of optimal schedules: {len(best_schedules)}\n")
+    
+    for idx, schedule in enumerate(best_schedules, 1):
+        print(f"Optimal Schedule {idx}:")
+        for task in schedule:
+            print(f"- {task}")
+        print()
